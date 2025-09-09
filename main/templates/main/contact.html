@@ -1,72 +1,257 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<section class="py-16">
-    <div class="max-w-2xl mx-auto px-4">
-        <h1 class="text-4xl font-bold text-center mb-8">Get In Touch</h1>
-        <p class="text-lg text-gray-600 text-center mb-12">Have a question or want to work together? Send me a message!</p>
-        
-        <!-- Success/Error Messages -->
-        {% if messages %}
-            {% for message in messages %}
-            <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
-                {{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
-        
-        <form method="POST" class="bg-white p-8 rounded-lg shadow-md">
-            {% csrf_token %}
-            
-            <div class="mb-6">
-                <label for="id_name" class="block text-gray-700 font-semibold mb-2">Your Name</label>
-                <input type="text" name="name" id="id_name" required 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                       placeholder="Enter your name">
-                {% if form.name.errors %}
-                <p class="text-red-600 text-sm mt-1">{{ form.name.errors.0 }}</p>
-                {% endif %}
-            </div>
-            
-            <div class="mb-6">
-                <label for="id_email" class="block text-gray-700 font-semibold mb-2">Your Email</label>
-                <input type="email" name="email" id="id_email" required 
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                       placeholder="Enter your email">
-                {% if form.email.errors %}
-                <p class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</p>
-                {% endif %}
-            </div>
-            
-            <div class="mb-6">
-                <label for="id_message" class="block text-gray-700 font-semibold mb-2">Your Message</label>
-                <textarea name="message" id="id_message" rows="5" required 
-                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Enter your message..."></textarea>
-                {% if form.message.errors %}
-                <p class="text-red-600 text-sm mt-1">{{ form.message.errors.0 }}</p>
-                {% endif %}
-            </div>
-            
-            <button type="submit" class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
-                Send Message
-            </button>
-        </form>
-        
-        <!-- Alternative Contact Info -->
-        {% if about_me %}
-        <div class="mt-12 text-center">
-            <h2 class="text-2xl font-semibold mb-4">Other Ways to Reach Me</h2>
-            <div class="space-y-2">
-                {% if about_me.email_public %}
-                <p><strong>Email:</strong> {{ about_me.email_public }}</p>
-                {% endif %}
-                {% if about_me.linkedin_url %}
-                <p><strong>LinkedIn:</strong> <a href="{{ about_me.linkedin_url }}" target="_blank" class="text-blue-600 hover:text-blue-800">{{ about_me.linkedin_url }}</a></p>
-                {% endif %}
-            </div>
+<!-- Hero Section -->
+<section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+    <!-- Background with gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+    
+    <!-- Animated background particles -->
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-1/4 left-1/4 w-48 h-48 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div class="absolute top-1/3 right-1/4 w-48 h-48 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
+    </div>
+    
+    <!-- Content -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="text-white" data-aos="fade-up">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                Get In 
+                <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                    Touch
+                </span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Ready to start your next project? Let's discuss how we can bring your ideas to life
+            </p>
         </div>
-        {% endif %}
     </div>
 </section>
+
+<!-- Contact Section -->
+<section class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-2 gap-16">
+            <!-- Contact Form -->
+            <div data-aos="fade-right">
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                            Send Me a 
+                            <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                                Message
+                            </span>
+                        </h2>
+                        <p class="text-gray-600">
+                            Have a question or want to work together? I'd love to hear from you.
+                        </p>
+                        <div class="w-20 h-1 bg-gradient-to-r from-purple-600 to-blue-600 mt-4 rounded-full"></div>
+                    </div>
+                    
+                    <!-- Success/Error Messages -->
+                    {% if messages %}
+                        {% for message in messages %}
+                        <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 text-green-800 px-6 py-4 rounded-xl mb-6 flex items-center">
+                            <svg class="w-6 h-6 mr-3 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <form method="POST" class="space-y-6">
+                        {% csrf_token %}
+                        
+                        <div>
+                            <label for="id_name" class="block text-gray-700 font-semibold mb-2">
+                                Your Name *
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" name="name" id="id_name" required 
+                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300"
+                                       placeholder="Enter your full name">
+                            </div>
+                            {% if form.name.errors %}
+                            <p class="text-red-600 text-sm mt-2 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ form.name.errors.0 }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="id_email" class="block text-gray-700 font-semibold mb-2">
+                                Email Address *
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <input type="email" name="email" id="id_email" required 
+                                       class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300"
+                                       placeholder="Enter your email address">
+                            </div>
+                            {% if form.email.errors %}
+                            <p class="text-red-600 text-sm mt-2 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ form.email.errors.0 }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        
+                        <div>
+                            <label for="id_message" class="block text-gray-700 font-semibold mb-2">
+                                Message *
+                            </label>
+                            <div class="relative">
+                                <div class="absolute top-3 left-3 pointer-events-none">
+                                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                    </svg>
+                                </div>
+                                <textarea name="message" id="id_message" rows="5" required 
+                                          class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-300 resize-none"
+                                          placeholder="Tell me about your project or ask me a question..."></textarea>
+                            </div>
+                            {% if form.message.errors %}
+                            <p class="text-red-600 text-sm mt-2 flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ form.message.errors.0 }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        
+                        <button type="submit" class="group w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 px-6 rounded-xl font-semibold hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 hover:scale-[1.02] flex items-center justify-center">
+                            <span class="mr-2">Send Message</span>
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Contact Info -->
+            <div data-aos="fade-left">
+                <div class="lg:pl-8">
+                    <div class="mb-12">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                            Let's 
+                            <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                                Connect
+                            </span>
+                        </h2>
+                        <p class="text-xl text-gray-600">
+                            I'm always excited to discuss new opportunities and innovative projects.
+                        </p>
+                        <div class="w-20 h-1 bg-gradient-to-r from-purple-600 to-blue-600 mt-6 rounded-full"></div>
+                    </div>
+                    
+                    <!-- Contact Methods -->
+                    <div class="space-y-8">
+                        {% if about_me.email_public %}
+                        <div class="group flex items-center p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="w-14 h-14 bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-7 h-7 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Email</h3>
+                                <p class="text-gray-600">{{ about_me.email_public }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if about_me.linkedin_url %}
+                        <div class="group flex items-center p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-7 h-7 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">LinkedIn</h3>
+                                <a href="{{ about_me.linkedin_url }}" target="_blank" class="text-blue-600 hover:text-blue-800 transition-colors">
+                                    Connect with me
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if about_me.location %}
+                        <div class="group flex items-center p-6 bg-white rounded-2xl shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="w-14 h-14 bg-gradient-to-br from-green-100 to-emerald-100 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-7 h-7 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Location</h3>
+                                <p class="text-gray-600">{{ about_me.location }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        <!-- Response Time -->
+                        <div class="group flex items-center p-6 bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl border border-purple-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div class="w-14 h-14 bg-gradient-to-br from-purple-200 to-blue-200 rounded-2xl flex items-center justify-center mr-6 group-hover:scale-110 transition-transform duration-300">
+                                <svg class="w-7 h-7 text-purple-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Response Time</h3>
+                                <p class="text-gray-600">Usually within 24 hours</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FAQ -->
+                    <div class="mt-12 p-6 bg-white rounded-2xl shadow-lg border border-gray-100">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-4">Quick Questions?</h3>
+                        <div class="space-y-3 text-sm text-gray-600">
+                            <p><strong>💼 Available for work?</strong> Yes, I'm open to new opportunities</p>
+                            <p><strong>🕐 Best time to contact?</strong> Monday to Friday, 9 AM - 6 PM EAT</p>
+                            <p><strong>🔧 Preferred project types?</strong> Backend development, cloud architecture, API design</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom CSS for animations -->
+<style>
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>
+
+<!-- Initialize AOS -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    });
+</script>
 {% endblock %}

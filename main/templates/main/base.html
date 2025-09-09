@@ -11,38 +11,149 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/animejs/lib/anime.iife.min.js"></script>
     <style>
+        /* Enhanced gradient text styles */
         .gradient-text {
             background: linear-gradient(90deg, #3b82f6, #8b5cf6);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
+        
+        /* Hero gradient background */
         .hero-gradient {
             background: linear-gradient(135deg, #1e3a8a 0%, #111827 100%);
         }
+        
+        /* Enhanced card hover effects */
         .card-hover {
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        
         .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        /* Navigation link hover effects */
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            background: linear-gradient(90deg, #7c3aed, #2563eb);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        * {
+            transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #7c3aed, #2563eb);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #6d28d9, #1d4ed8);
+        }
+        
+        /* Loading animation for images */
+        img {
+            transition: opacity 0.3s ease;
+        }
+        
+        img[loading] {
+            opacity: 0.5;
+        }
+        
+        /* Focus styles for accessibility */
+        button:focus,
+        a:focus {
+            outline: 2px solid #7c3aed;
+            outline-offset: 2px;
         }
     </style>
 </head>
 <body class="font-sans antialiased text-gray-800 bg-gray-50">
-    <!-- Navigation -->
-   <nav class="bg-white shadow-sm fixed w-full z-10">
+    <!-- Modern Navigation -->
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-white/20 transition-all duration-300" id="navbar">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <a href="{% url 'home' %}" class="text-xl font-bold text-blue-600">Damaris Chege</a>
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="{% url 'home' %}" class="group flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-br from-purple-600 to-blue-600 rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">DC</span>
+                    </div>
+                    <span class="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent group-hover:from-purple-700 group-hover:to-blue-700 transition-all">
+                        Damaris Chege
+                    </span>
+                </a>
                 
-                <div class="hidden md:flex space-x-8">
-                    <a href="{% url 'home' %}" class="text-gray-700 hover:text-blue-600 transition">Home</a>
-                    <a href="{% url 'about' %}" class="text-gray-700 hover:text-blue-600 transition">About</a>
-                    <a href="{% url 'projects' %}" class="text-gray-700 hover:text-blue-600 transition">Projects</a>
-                    <a href="{% url 'contact' %}" class="text-gray-700 hover:text-blue-600 transition">Contact</a>
-                    <a href="{% url 'certifications' %}" class="text-gray-700 hover:text-blue-600 transition">Certifications</a>
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{% url 'home' %}" class="nav-link relative text-gray-700 hover:text-purple-600 font-medium transition-colors duration-300">
+                        Home
+                    </a>
+                    <a href="{% url 'about' %}" class="nav-link relative text-gray-700 hover:text-purple-600 font-medium transition-colors duration-300">
+                        About
+                    </a>
+                    <a href="{% url 'projects' %}" class="nav-link relative text-gray-700 hover:text-purple-600 font-medium transition-colors duration-300">
+                        Projects
+                    </a>
+                    <a href="{% url 'certifications' %}" class="nav-link relative text-gray-700 hover:text-purple-600 font-medium transition-colors duration-300">
+                        Certifications
+                    </a>
+                    <a href="{% url 'contact' %}" class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-4 py-2 rounded-full font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105">
+                        Contact
+                    </a>
                 </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="mobile-menu-button p-2 rounded-md text-gray-700 hover:text-purple-600 hover:bg-gray-100 transition-colors" aria-expanded="false">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation Menu -->
+        <div class="md:hidden mobile-menu hidden bg-white/95 backdrop-blur-md border-t border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="{% url 'home' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                    Home
+                </a>
+                <a href="{% url 'about' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                    About
+                </a>
+                <a href="{% url 'projects' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                    Projects
+                </a>
+                <a href="{% url 'certifications' %}" class="block px-3 py-2 text-gray-700 hover:text-purple-600 hover:bg-gray-50 rounded-md font-medium transition-colors">
+                    Certifications
+                </a>
+                <a href="{% url 'contact' %}" class="block mx-3 mt-4 mb-2 px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center rounded-full font-medium">
+                    Contact
+                </a>
             </div>
         </div>
     </nav>
@@ -56,25 +167,147 @@
         {% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12 mt-16">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <p>&copy; 2025 Damaris Chege. Built with Django & Django REST Framework.</p>
-            <div class="flex justify-center space-x-6 mt-4">
-                {% if about_me.github_url %}
-                <a href="{{ about_me.github_url }}" target="_blank" class="hover:text-blue-400 transition-colors">GitHub</a>
-                {% endif %}
-                {% if about_me.linkedin_url %}
-                <a href="{{ about_me.linkedin_url }}" target="_blank" class="hover:text-blue-400 transition-colors">LinkedIn</a>
-                {% endif %}
+    <!-- Modern Footer -->
+    <footer class="bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900 text-white relative overflow-hidden">
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.4"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Brand Section -->
+                <div class="md:col-span-1">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-lg">DC</span>
+                        </div>
+                        <span class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+                            Damaris Chege
+                        </span>
+                    </div>
+                    <p class="text-gray-300 mb-6">
+                        Backend Developer & Solution Architect passionate about building scalable, efficient systems.
+                    </p>
+                    
+                    <!-- Social Links -->
+                    <div class="flex space-x-4">
+                        {% if about_me.github_url %}
+                        <a href="{{ about_me.github_url }}" target="_blank" 
+                           class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 group">
+                            <svg class="w-5 h-5 text-gray-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        
+                        {% if about_me.linkedin_url %}
+                        <a href="{{ about_me.linkedin_url }}" target="_blank" 
+                           class="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center hover:bg-white/20 transition-all duration-300 hover:scale-110 group">
+                            <svg class="w-5 h-5 text-gray-300 group-hover:text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="md:col-span-1">
+                    <h4 class="text-lg font-semibold mb-4 text-white">Quick Links</h4>
+                    <div class="space-y-2">
+                        <a href="{% url 'home' %}" class="block text-gray-300 hover:text-purple-400 transition-colors">Home</a>
+                        <a href="{% url 'about' %}" class="block text-gray-300 hover:text-purple-400 transition-colors">About Me</a>
+                        <a href="{% url 'projects' %}" class="block text-gray-300 hover:text-purple-400 transition-colors">Projects</a>
+                        <a href="{% url 'certifications' %}" class="block text-gray-300 hover:text-purple-400 transition-colors">Certifications</a>
+                        <a href="{% url 'contact' %}" class="block text-gray-300 hover:text-purple-400 transition-colors">Contact</a>
+                    </div>
+                </div>
+                
+                <!-- Contact Info -->
+                <div class="md:col-span-1">
+                    <h4 class="text-lg font-semibold mb-4 text-white">Let's Connect</h4>
+                    <p class="text-gray-300 mb-4">
+                        Ready to discuss your next project or collaboration opportunity?
+                    </p>
+                    <a href="{% url 'contact' %}" 
+                       class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full font-medium hover:shadow-lg hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105">
+                        Get in Touch
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="border-t border-white/10 mt-12 pt-8 text-center">
+                <p class="text-gray-400">
+                    &copy; 2025 Damaris Chege. Built with 
+                    <span class="text-purple-400">Django</span> & 
+                    <span class="text-blue-400">Django REST Framework</span>.
+                </p>
             </div>
         </div>
     </footer>
 
-    <!-- JavaScript for interactive elements -->
+    <!-- Enhanced JavaScript for interactive elements -->
     <script>
-        // Simple script to animate skill bars when they come into view
         document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+            }
+            
+            // Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            let lastScroll = 0;
+            
+            window.addEventListener('scroll', function() {
+                const currentScroll = window.pageYOffset;
+                
+                if (currentScroll > 100) {
+                    navbar.classList.add('bg-white/95', 'shadow-lg');
+                    navbar.classList.remove('bg-white/80');
+                } else {
+                    navbar.classList.add('bg-white/80');
+                    navbar.classList.remove('bg-white/95', 'shadow-lg');
+                }
+                
+                lastScroll = currentScroll;
+            });
+            
+            // Add active state to nav links
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('text-purple-600');
+                    link.classList.remove('text-gray-700');
+                }
+            });
+            
+            // Smooth scroll for internal links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+            
+            // Animate skill bars when they come into view
             const skillBars = document.querySelectorAll('.skill-progress');
             
             const observer = new IntersectionObserver((entries) => {
@@ -87,6 +320,18 @@
             }, { threshold: 0.5 });
             
             skillBars.forEach(bar => observer.observe(bar));
+            
+            // Add hover effects to project cards
+            const projectCards = document.querySelectorAll('.project-card');
+            projectCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-8px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
         });
     </script>
 </body>

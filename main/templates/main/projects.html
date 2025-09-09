@@ -1,47 +1,194 @@
 {% extends "main/base.html" %}
 
 {% block content %}
-<section class="py-16">
-    <div class="max-w-6xl mx-auto px-4">
-        <h1 class="text-4xl font-bold text-center mb-12">My Projects</h1>
-        
+<!-- Hero Section -->
+<section class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+    <!-- Background with gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+    
+    <!-- Animated background particles -->
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-1/4 left-1/4 w-48 h-48 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div class="absolute top-1/3 right-1/4 w-48 h-48 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
+        <div class="absolute bottom-1/4 left-1/3 w-48 h-48 bg-indigo-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
+    </div>
+    
+    <!-- Content -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="text-white" data-aos="fade-up">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6">
+                My 
+                <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                    Projects
+                </span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">
+                Explore my portfolio of innovative solutions and creative implementations
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Projects Grid -->
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {% for project in projects %}
-            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-                {% if project.architecture_diagram %}
-                <img src="{{ project.architecture_diagram.url }}" alt="{{ project.title }}" class="w-full h-48 object-cover">
-                {% endif %}
-                <div class="p-6">
-                    <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full mb-2 inline-block">
-                        {{ project.project_type }}
-                    </span>
-                    <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
-                    <p class="text-gray-600 mb-4">{{ project.description|truncatewords:25 }}</p>
+            <div class="group relative bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 z-10" data-aos="fade-up" data-aos-delay="{% cycle '100' '200' '300' '400' '500' '600' %}">
+                <!-- Project Image -->
+                <div class="relative h-48 overflow-hidden">
+                    {% if project.architecture_diagram %}
+                        <img src="{{ project.architecture_diagram.url }}" alt="{{ project.title }}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    {% else %}
+                        <div class="w-full h-full bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center">
+                            <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+                            </svg>
+                        </div>
+                    {% endif %}
+                    <!-- Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                     
-                    <div class="flex flex-wrap gap-2 mb-4">
+                    <!-- Project Type Badge -->
+                    {% if project.project_type %}
+                    <div class="absolute top-4 left-4">
+                        <span class="inline-flex items-center px-3 py-1 text-xs font-medium bg-white/90 text-purple-700 rounded-full border border-purple-200 backdrop-blur-sm">
+                            {{ project.project_type }}
+                        </span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <!-- Project Content -->
+                <div class="p-6 relative z-10 bg-white group-hover:bg-white">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-purple-600 transition-colors duration-300">
+                        {{ project.title }}
+                    </h3>
+                    <p class="text-gray-600 mb-4 leading-relaxed group-hover:text-gray-700 transition-colors duration-300">
+                        {{ project.description|truncatewords:25 }}
+                    </p>
+                    
+                    <!-- Technologies -->
+                    <div class="flex flex-wrap gap-2 mb-6">
                         {% for skill in project.technologies_used.all|slice:":4" %}
-                        <span class="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded">{{ skill.name }}</span>
+                            <span class="inline-flex items-center px-3 py-1 text-xs font-medium bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full border border-purple-200 group-hover:from-purple-200 group-hover:to-blue-200 transition-all duration-300">
+                                {{ skill.name }}
+                            </span>
                         {% endfor %}
+                        {% if project.technologies_used.all|length > 4 %}
+                            <span class="inline-flex items-center px-3 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                                +{{ project.technologies_used.all|length|add:"-4" }} more
+                            </span>
+                        {% endif %}
                     </div>
                     
-                    <div class="flex space-x-3">
-                        {% if project.github_url %}
-                        <a href="{{ project.github_url }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">GitHub</a>
-                        {% endif %}
-                        {% if project.live_demo_url %}
-                        <a href="{{ project.live_demo_url }}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">Live Demo</a>
-                        {% endif %}
-                        <a href="{% url 'project_detail' project.id %}" class="text-blue-600 hover:text-blue-800 text-sm">Details</a>
-
+                    <!-- Action Buttons -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex space-x-3">
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" 
+                               class="inline-flex items-center text-sm text-gray-600 hover:text-purple-600 transition-colors duration-300">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                                Code
+                            </a>
+                            {% endif %}
+                            
+                            {% if project.live_demo_url %}
+                            <a href="{{ project.live_demo_url }}" target="_blank" 
+                               class="inline-flex items-center text-sm text-gray-600 hover:text-blue-600 transition-colors duration-300">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                </svg>
+                                Demo
+                            </a>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- View Details Link -->
+                        <a href="{% url 'project_detail' project.id %}" 
+                           class="relative z-20 inline-flex items-center text-purple-600 hover:text-purple-700 font-semibold transition-colors duration-300">
+                            Details
+                            <svg class="w-4 h-4 ml-1 hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
+                
+                <!-- Hover gradient border -->
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 group-hover:opacity-20 transition-opacity duration-300 -z-10 blur-sm"></div>
             </div>
             {% empty %}
-            <div class="col-span-full text-center text-gray-500 py-12">
-                <p class="text-lg">No projects available yet. Check back soon!</p>
-            </div>
+                <div class="col-span-full text-center py-16" data-aos="fade-up">
+                    <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900 mb-2">No Projects Yet</h3>
+                    <p class="text-gray-600">Projects will be showcased here soon. Check back for exciting updates!</p>
+                </div>
             {% endfor %}
         </div>
     </div>
 </section>
+
+<!-- Call to Action Section -->
+<section class="py-20 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 relative overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,%3Csvg width=\"60\" height=\"60\" viewBox=\"0 0 60 60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cg fill=\"none\" fill-rule=\"evenodd\"%3E%3Cg fill=\"%23ffffff\" fill-opacity=\"0.4\"%3E%3Cpath d=\"M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div data-aos="fade-up">
+            <h2 class="text-4xl lg:text-5xl font-bold text-white mb-6">
+                Have a Project 
+                <span class="text-yellow-300">in Mind?</span>
+            </h2>
+            <p class="text-xl text-blue-100 mb-10 max-w-3xl mx-auto leading-relaxed">
+                I'm always excited to take on new challenges and create innovative solutions. 
+                Let's discuss how we can bring your ideas to life.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="{% url 'contact' %}" 
+                   class="group relative px-8 py-4 bg-white text-purple-600 rounded-full font-bold text-lg hover:shadow-2xl transition-all duration-300 hover:scale-105">
+                    <span class="relative z-10">Start a Project</span>
+                </a>
+                
+                <a href="{% url 'about' %}" 
+                   class="px-8 py-4 border-2 border-white/30 text-white rounded-full font-semibold hover:bg-white/10 transition-all duration-300 hover:border-white backdrop-blur-sm">
+                    Learn More About Me
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Custom CSS for animations -->
+<style>
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+    
+    .animation-delay-4000 {
+        animation-delay: 4s;
+    }
+</style>
+
+<!-- Initialize AOS -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    });
+</script>
 {% endblock %}

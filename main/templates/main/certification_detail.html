@@ -1,43 +1,275 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Certificate Details</title>
-    <!-- Add Bootstrap CSS if you're using it -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-4">
-        <h1>Certificate Details</h1>
-        
-        <!-- Display certificate data -->
-        <div class="card">
-            <div class="card-body">
-                <h2>{{ certification.title }}</h2>
-                <p><strong>Issuer:</strong> {{ certification.issuer }}</p>
-                <p><strong>Completion Date:</strong> {{ certification.completion_date }}</p>
-                <p><strong>Description:</strong> {{ certification.description }}</p>
-                
-                <!-- Display certificate image if exists -->
-                {% if certification.image %}
-                <div class="mt-3">
-                    <img src="{{ certification.image.url }}" alt="{{ certification.title }}" class="img-fluid" style="max-height: 400px;">
+{% extends 'main/base.html' %}
+
+{% block title %}{{ certification.name }} - Certification Details{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+    <!-- Background with gradient overlay -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"></div>
+    
+    <!-- Animated background particles -->
+    <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-1/4 left-1/4 w-48 h-48 bg-purple-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+        <div class="absolute top-1/3 right-1/4 w-48 h-48 bg-blue-600 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
+    </div>
+    
+    <!-- Content -->
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div class="text-white" data-aos="fade-up">
+            <!-- Breadcrumb -->
+            <div class="mb-6">
+                <nav class="flex justify-center" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-3">
+                        <li class="inline-flex items-center">
+                            <a href="{% url 'home' %}" class="text-gray-300 hover:text-white transition-colors">
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <a href="{% url 'certifications' %}" class="text-gray-300 hover:text-white transition-colors">
+                                    Certifications
+                                </a>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 text-gray-400 mx-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-gray-400">{{ certification.name|truncatewords:4 }}</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+                <span class="bg-gradient-to-r from-purple-400 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                    {{ certification.name }}
+                </span>
+            </h1>
+            <p class="text-lg text-gray-300">
+                Professional certification details and verification
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Certification Details Section -->
+<section class="py-20 bg-gradient-to-b from-slate-50 to-white">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid lg:grid-cols-3 gap-12">
+            <!-- Certification Image -->
+            <div class="lg:col-span-1" data-aos="fade-right">
+                <div class="sticky top-8">
+                    {% if certification.image %}
+                        <div class="relative group">
+                            <div class="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                                <img src="{{ certification.image.url }}" 
+                                     alt="{{ certification.name }}" 
+                                     class="w-full rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300">
+                                
+                                <!-- Status Badge -->
+                                <div class="absolute top-10 right-10">
+                                    {% if certification.expiration_date %}
+                                        {% if certification.expiration_date|date:"Y-m-d" > "now"|date:"Y-m-d" %}
+                                            <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-green-100 text-green-800 rounded-full border border-green-200">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Active
+                                            </span>
+                                        {% else %}
+                                            <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-red-100 text-red-800 rounded-full border border-red-200">
+                                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                Expired
+                                            </span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-blue-100 text-blue-800 rounded-full border border-blue-200">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Lifetime
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="bg-gradient-to-br from-purple-500 to-blue-600 rounded-2xl shadow-xl p-12 text-center">
+                            <svg class="w-20 h-20 text-white mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                            </svg>
+                            <h3 class="text-xl font-semibold text-white">Professional Certification</h3>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Action Buttons -->
+                    <div class="mt-8 space-y-3">
+                        {% if certification.credential_url %}
+                        <a href="{{ certification.credential_url }}" target="_blank" 
+                           class="w-full flex items-center justify-center px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold hover:shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 hover:scale-105">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                            </svg>
+                            Verify Credential
+                        </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'certifications' %}" 
+                           class="w-full flex items-center justify-center px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-xl font-semibold hover:bg-gray-50 transition-all duration-300">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Back to Certifications
+                        </a>
+                    </div>
                 </div>
-                {% endif %}
+            </div>
+            
+            <!-- Certification Information -->
+            <div class="lg:col-span-2" data-aos="fade-left">
+                <!-- Main Info Card -->
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 mb-8">
+                    <div class="mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900 mb-4">
+                            Certification 
+                            <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                                Details
+                            </span>
+                        </h2>
+                        <div class="w-20 h-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"></div>
+                    </div>
+                    
+                    <!-- Certification Info Grid -->
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <!-- Issuer -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Issuing Organization</h3>
+                                <p class="text-gray-600">{{ certification.issuer }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Category -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-100 to-blue-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Category</h3>
+                                <span class="inline-flex items-center px-3 py-1 text-sm font-medium bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 rounded-full border border-purple-200">
+                                    {{ certification.get_category_display }}
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Issue Date -->
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-100 to-emerald-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Issue Date</h3>
+                                <p class="text-gray-600">{{ certification.issue_date|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Expiration Date -->
+                        {% if certification.expiration_date %}
+                        <div class="flex items-start">
+                            <div class="w-12 h-12 bg-gradient-to-br from-orange-100 to-red-100 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                                <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-900 mb-1">Expiration Date</h3>
+                                <p class="text-gray-600">{{ certification.expiration_date|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Credential ID -->
+                    {% if certification.credential_id %}
+                    <div class="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Credential Information</h3>
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Credential ID</p>
+                                <p class="font-mono text-gray-900 bg-white px-3 py-2 rounded-lg border">{{ certification.credential_id }}</p>
+                            </div>
+                            <button onclick="copyCredential()" class="ml-4 p-2 text-gray-500 hover:text-purple-600 transition-colors" title="Copy Credential ID">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
                 
-                <!-- Validation link -->
-                {% if certification.validation_url %}
-                <div class="mt-3">
-                    <a href="{{ certification.validation_url }}" target="_blank" class="btn btn-primary">
-                        Validate Certificate
-                    </a>
+                <!-- Description -->
+                {% if certification.description %}
+                <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">
+                        About This 
+                        <span class="bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                            Certification
+                        </span>
+                    </h3>
+                    <div class="w-16 h-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full mb-6"></div>
+                    <div class="prose prose-lg text-gray-600 leading-relaxed">
+                        {{ certification.description|linebreaks }}
+                    </div>
                 </div>
                 {% endif %}
             </div>
         </div>
-        
-        <a href="{% url 'certification_detail' pk=1 %}" class="btn btn-secondary mt-3">Back to Certificates</a>
     </div>
-</body>
-</html>
+</section>
+
+<!-- Custom CSS and JavaScript -->
+<style>
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+    });
+    
+    function copyCredential() {
+        const credentialText = "{{ certification.credential_id }}";
+        navigator.clipboard.writeText(credentialText).then(function() {
+            // You could add a toast notification here
+            alert('Credential ID copied to clipboard!');
+        });
+    }
+</script>
+{% endblock %}
