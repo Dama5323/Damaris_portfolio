@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'a-fallback-key-for-development-only')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+ALLOWED_HOSTS = ['damaris-portfolio.onrender.com', '127.0.0.1', 'localhost']
 
 
 # Application definition
