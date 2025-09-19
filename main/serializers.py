@@ -6,7 +6,8 @@ class SkillSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Skill
-        fields = ['id', 'name', 'category', 'category_display', 'level', 'description', 'created', 'modified']
+        fields = ['id', 'name', 'category', 'category_display', 'description', 'icon', 'created', 'modified']
+        # Removed 'level' field since it doesn't exist in the model
 
 class ProjectSerializer(serializers.ModelSerializer):
     technologies_used = SkillSerializer(many=True, read_only=True)

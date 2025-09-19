@@ -3,11 +3,14 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from rest_framework import generics, status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from .models import AboutMe, Skill, Project, ContactMe, Certification
-from .serializers import AboutMeSerializer, SkillSerializer, ProjectSerializer, ContactMeSerializer, CertificationSerializer  # Added CertificationSerializer
+from .serializers import AboutMeSerializer, SkillSerializer, ProjectSerializer, ContactMeSerializer, CertificationSerializer
 from .forms import ContactForm
 
 # ===== TEMPLATE VIEWS =====
@@ -55,7 +58,6 @@ def about_view(request):
         'certifications': certifications,
     }
     return render(request, 'main/about.html', context)
-
 
 def projects_view(request):
     """Projects page view"""
@@ -113,37 +115,73 @@ class AboutMeListAPIView(generics.ListAPIView):
     """API endpoint for About Me data"""
     queryset = AboutMe.objects.all()
     serializer_class = AboutMeSerializer
+    permission_classes = [AllowAny]
 
 class SkillListAPIView(generics.ListAPIView):
     """API endpoint for Skills"""
     queryset = Skill.objects.all()
     serializer_class = SkillSerializer
+    permission_classes = [AllowAny]
 
 class ProjectListAPIView(generics.ListAPIView):
     """API endpoint for Projects"""
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 class ProjectDetailAPIView(generics.RetrieveAPIView):
     """API endpoint for single Project detail"""
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = [IsAuthenticated]
 
 class CertificationListAPIView(generics.ListAPIView):  
     """API endpoint for Certifications"""
     queryset = Certification.objects.all()
     serializer_class = CertificationSerializer
+    permission_classes = [AllowAny]
 
 class CertificationDetailAPIView(generics.RetrieveAPIView):  
     """API endpoint for single Certification detail"""
     queryset = Certification.objects.all()
     serializer_class = CertificationSerializer
+    permission_classes = [AllowAny]
 
+@swagger_auto_schema(
+    method='post',
+    request_body=openapi.Schema(
+        type=openapi.TYPE_OBJECT,
+        properties={
+            'name': openapi.Schema(type=openapi.TYPE_STRING, description='Your name'),
+            'email': openapi.Schema(type=openapi.TYPE_STRING, description='Your email'),
+            'message': openapi.Schema(type=openapi.TYPE_STRING, description='Your message'),
+        },
+        required=['name', 'email', 'message']
+    ),
+    responses={
+        201: openapi.Response('Contact message created successfully', ContactMeSerializer),
+        400: openapi.Response('Bad Request - Invalid data'),
+    }
+)
 @api_view(['POST'])
+@permission_classes([AllowAny])
 def contact_api_view(request):
     """API endpoint for contact form submissions"""
     serializer = ContactMeSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.save()
+        contact_message = serializer.save()
+        
+        # Send email notification (optional)
+        try:
+            send_mail(
+                f'Portfolio Contact from {contact_message.name}',
+                f'Name: {contact_message.name}\nEmail: {contact_message.email}\n\nMessage:\n{contact_message.message}',
+                settings.DEFAULT_FROM_EMAIL,
+                [settings.CONTACT_EMAIL],  
+                fail_silently=True,
+            )
+        except:
+            pass
+        
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
