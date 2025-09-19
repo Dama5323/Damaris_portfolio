@@ -52,10 +52,10 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
 ]
 
-MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 
-    'whitenoise.middleware.WhiteNoiseMiddleware', 
+MMIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  
+    'corsheaders.middleware.CorsMiddleware',       
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,7 +63,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 ROOT_URLCONF = 'portfolio_project.urls'
 
 TEMPLATES = [
@@ -135,10 +134,17 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+# Static files settings
+STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+
+# For Django 4.2+ use this instead:
+STORAGES = {
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Media files configuration
 MEDIA_URL = '/media/'
