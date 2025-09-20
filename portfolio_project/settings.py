@@ -15,6 +15,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 from pathlib import Path
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,7 +53,10 @@ INSTALLED_APPS = [
     'drf_yasg',
     'main', 
     'whitenoise.runserver_nostatic',
+    'cloudinary',
+    'cloudinary_storage',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -151,26 +157,29 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
+# Cloudinary settings
+cloudinary.config(
+    cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
+    api_key=os.getenv('CLOUDINARY_API_KEY'),
+    api_secret=os.getenv('CLOUDINARY_API_SECRET'),
+    secure=True
+)
 
-# Static files settings
+# Static files (still via Whitenoise)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# For Django 4.2+ use this instead:
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",  # For media file uploads
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",  # Media -> Cloudinary
     },
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",  # Static -> Whitenoise
     },
 }
 
-
-# Media files configuration
+# Optional: Keep MEDIA_URL for compatibility
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 # Default primary key field type

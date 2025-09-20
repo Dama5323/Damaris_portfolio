@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils import timezone  
+from cloudinary.models import CloudinaryField 
 
 class TimeStampedModel(models.Model):
     """
@@ -23,7 +24,7 @@ class AboutMe(TimeStampedModel):
     resume_url = models.URLField(blank=True)
     github_url = models.URLField(blank=True)
     linkedin_url = models.URLField(blank=True)
-    photo = models.ImageField(upload_to="profile/", blank=True, null=True)
+    photo = CloudinaryField('image', folder="profile", blank=True, null=True)
 
     class Meta:
         verbose_name_plural = "About me"
@@ -72,7 +73,7 @@ class Project(TimeStampedModel):
     technologies_used = models.ManyToManyField(Skill, blank=True, related_name='projects') 
     github_url = models.URLField(blank=True, null=True)
     live_demo_url = models.URLField(blank=True, null=True)
-    architecture_diagram = models.ImageField(upload_to='architecture_diagrams/', blank=True, null=True)
+    architecture_diagram = CloudinaryField('image', folder="architecture_diagrams", blank=True, null=True)
     featured = models.BooleanField(default=False)
 
     class Meta:
@@ -94,7 +95,8 @@ class Certification(TimeStampedModel):
     expiration_date = models.DateField(blank=True, null=True)
     credential_id = models.CharField(max_length=100, blank=True)
     credential_url = models.URLField(blank=True)
-    image = models.ImageField(upload_to="certification", blank=True, null=True)
+    image = CloudinaryField('image', folder="certification", blank=True, null=True)
+
 
     class Meta:
         ordering = ["-issue_date"]
