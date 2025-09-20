@@ -178,8 +178,7 @@ STORAGES = {
     },
 }
 
-# Optional: Keep MEDIA_URL for compatibility
-MEDIA_URL = '/media/'
+MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
 
 
 # Default primary key field type
