@@ -92,13 +92,17 @@ WSGI_APPLICATION = 'portfolio_project.wsgi.application'
 
 
 DATABASES = {
-    'default': dj_database_url.config(
-        default=os.getenv('DATABASE_URL', f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT')}/{os.getenv('DB_NAME')}"),
-        conn_max_age=600,
-        conn_health_checks=True,
-        ssl_require=not DEBUG
-    )
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "damaris_portfolio",
+        "USER": "damaris_user",
+        "PASSWORD": "mno12345",
+        "HOST": "localhost",
+        "PORT": "5432",
+    }
 }
+
+
 
 
 # Password validation
@@ -142,10 +146,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # For Django 4.2+ use this instead:
 STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",  # For media file uploads
+    },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
     },
 }
+
 
 # Media files configuration
 MEDIA_URL = '/media/'
