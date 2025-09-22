@@ -12,6 +12,7 @@ from drf_yasg import openapi
 from .models import AboutMe, Skill, Project, ContactMe, Certification
 from .serializers import AboutMeSerializer, SkillSerializer, ProjectSerializer, ContactMeSerializer, CertificationSerializer
 from .forms import ContactForm
+import markdown2
 
 # ===== TEMPLATE VIEWS =====
 def home_view(request):
@@ -40,6 +41,9 @@ def home_view(request):
 def about_view(request):
     """About page view"""
     about_me = AboutMe.objects.first()
+    bio_html = ""
+    if about_me and about_me.bio_md:
+        bio_html = markdown2.markdown(about_me.bio_md)
     certifications = Certification.objects.all().order_by('-issue_date')
     skills = Skill.objects.all()  
     
@@ -53,6 +57,7 @@ def about_view(request):
     
     context = {
         'about_me': about_me,
+        'bio_html': bio_html,
         'skills': skills, 
         'skill_categories': skill_categories, 
         'certifications': certifications,

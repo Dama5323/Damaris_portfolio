@@ -46,9 +46,9 @@
                     </h2>
                     <div class="w-20 h-1 bg-yellow-500 rounded-full"></div>
                 </div>
-                
-                <div class="prose prose-lg text-gray-300 mb-8">
-                    {{ about_me.bio_md|linebreaks }}
+               
+                <div class="prose prose-lg text-gray-300 mb-8 space-y-6">
+                    {{ bio_html|safe }}
                 </div>
                 
                 <!-- Top Skills -->
