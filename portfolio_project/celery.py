@@ -10,9 +10,12 @@ app = Celery('portfolio_project')
 # the configuration object to child processes.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
-# Load task modules from all registered Django apps.
+# Use environment variable for Redis URL
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+
 app.autodiscover_tasks()
 
-@app.task(bind=True)
-def debug_task(self):
-    print(f'Request: {self.request!r}')
+# Broker configuration
+app.conf.broker_url = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+app.conf.result_backend = os.environ.get('REDIS_URL', 'redis://localhost:6379')
+app.conf.broker_connection_retry_on_startup = True

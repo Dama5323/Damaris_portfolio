@@ -213,6 +213,9 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'damarischege045@gmail.com')
 CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'damarischege045@gmail.com')
 
+# Important: Add timeout settings
+EMAIL_TIMEOUT = 30  # seconds
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
