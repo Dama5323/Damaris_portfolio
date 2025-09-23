@@ -14,6 +14,15 @@ from .serializers import AboutMeSerializer, SkillSerializer, ProjectSerializer, 
 from .forms import ContactForm
 import markdown2
 
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.utils import timezone
+
+# Import your Celery tasks (make sure tasks.py exists)
+from .tasks import send_contact_notification, send_auto_response
+
 # ===== TEMPLATE VIEWS =====
 def home_view(request):
     """Home page view - aggregates data from multiple models"""
@@ -88,31 +97,43 @@ def certification_detail_view(request, pk):
     context = {'certification': certification}
     return render(request, 'main/certification_detail.html', context)
 
+# main/views.py
 def contact_view(request):
-    """Contact page view with form handling"""
+    """Contact page view with form handling - NOW USING CELERY"""
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             contact_message = form.save()
             
-            # Send email notification (optional)
-            try:
-                send_mail(
-                    f'Portfolio Contact from {contact_message.name}',
-                    f'Name: {contact_message.name}\nEmail: {contact_message.email}\n\nMessage:\n{contact_message.message}',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [settings.CONTACT_EMAIL],  
-                    fail_silently=True,
-                )
-            except:
-                pass  
+            # Prepare contact data for Celery task
+            contact_data = {
+                'name': contact_message.name,
+                'email': contact_message.email,
+                'message': contact_message.message,
+                'timestamp': str(timezone.now()),
+                'db_id': contact_message.id
+            }
             
-            messages.success(request, 'Your message has been sent successfully!')
+            # Send notifications asynchronously using Celery
+            # This won't block the web server
+            notification_task = send_contact_notification.delay(contact_data)
+            auto_response_task = send_auto_response.delay(contact_data)
+            
+            # Log for debugging
+            print(f"Celery tasks started: Notification={notification_task.id}, Auto-response={auto_response_task.id}")
+            
+            messages.success(request, 'Your message has been sent successfully! I will get back to you soon.')
             return redirect('contact')
     else:
         form = ContactForm()
     
-    context = {'form': form}
+    # Get about_me data for the contact info section
+    about_me = AboutMe.objects.first()
+    
+    context = {
+        'form': form,
+        'about_me': about_me
+    }
     return render(request, 'main/contact.html', context)
 
 # ===== API VIEWS =====
@@ -176,17 +197,84 @@ def contact_api_view(request):
     if serializer.is_valid():
         contact_message = serializer.save()
         
-        # Send email notification (optional)
-        try:
-            send_mail(
-                f'Portfolio Contact from {contact_message.name}',
-                f'Name: {contact_message.name}\nEmail: {contact_message.email}\n\nMessage:\n{contact_message.message}',
-                settings.DEFAULT_FROM_EMAIL,
-                [settings.CONTACT_EMAIL],  
-                fail_silently=True,
-            )
-        except:
-            pass
+        # Prepare contact data for Celery task
+        contact_data = {
+            'name': contact_message.name,
+            'email': contact_message.email,
+            'message': contact_message.message,
+            'timestamp': str(timezone.now()),
+            'db_id': contact_message.id
+        }
+        
+        # Send notifications asynchronously using Celery
+        send_contact_notification.delay(contact_data)
+        send_auto_response.delay(contact_data)
         
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# ===== ASYNC CONTACT FORM HANDLING (JSON API) =====
+@csrf_exempt
+@require_http_methods(["POST"])
+def contact_async_view(request):
+    """
+    Handle contact form submissions via JSON and send email notifications asynchronously
+    This is for AJAX requests from the frontend
+    """
+    try:
+        # Parse JSON data from the request
+        data = json.loads(request.body)
+        
+        # Extract form data (matching your ContactMe model fields)
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        message = data.get('message', '').strip()
+        
+        # Basic validation
+        if not name or not email or not message:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Please fill in all required fields: name, email, and message.'
+            }, status=400)
+        
+        # Save to database
+        contact_entry = ContactMe.objects.create(
+            name=name,
+            email=email,
+            message=message
+        )
+        
+        # Prepare contact data for Celery task
+        contact_data = {
+            'name': name,
+            'email': email,
+            'message': message,
+            'timestamp': str(timezone.now()),
+            'db_id': contact_entry.id
+        }
+        
+        # Send notifications asynchronously using Celery
+        notification_task = send_contact_notification.delay(contact_data)
+        auto_response_task = send_auto_response.delay(contact_data)
+        
+        # Log the task IDs for debugging
+        print(f"Notification task ID: {notification_task.id}")
+        print(f"Auto-response task ID: {auto_response_task.id}")
+        
+        return JsonResponse({
+            'status': 'success',
+            'message': 'Thank you for your message! I will get back to you soon.',
+            'task_id': notification_task.id
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid JSON data.'
+        }, status=400)
+        
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'An unexpected error occurred. Please try again later.'
+        }, status=500)

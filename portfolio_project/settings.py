@@ -18,6 +18,7 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+import platform
 
 # Load environment variables from .env file
 load_dotenv()
@@ -55,6 +56,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'cloudinary',
     'cloudinary_storage',
+    'django_celery_results',
 ]
 
 
@@ -190,21 +192,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-# Email Settings
-DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'noreply@yourportfolio.com')
-CONTACT_EMAIL = os.getenv('CONTACT_EMAIL')
+# Celery Configuration - REDIS (Development & Production)
+REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
 
-# Use SMTP if credentials are provided, otherwise use console for development
+CELERY_BROKER_URL = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+CELERY_TASK_IGNORE_RESULT = True
+
+# Email Configuration (UNCHANGED)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'damarischege045@gmail.com')
 EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-if EMAIL_HOST_PASSWORD:
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'  
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
-    EMAIL_HOST_USER = DEFAULT_FROM_EMAIL
-else:
-    # If no email password is set, use the console backend for development
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'damarischege045@gmail.com')
+CONTACT_EMAIL = os.getenv('CONTACT_EMAIL', 'damarischege045@gmail.com')
+
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
